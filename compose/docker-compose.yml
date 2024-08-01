@@ -1,0 +1,77 @@
+version: "3.8"
+
+networks:
+
+
+
+
+  part_network:
+
+services:
+
+  # Backend
+  backend:
+    build: ../backend
+    image: part-broker-backend:v1.0.0
+    container_name: backend_part_broker
+    restart: always
+    volumes:
+        - ../backend:/app
+    ports:
+      - "${BACKEND_INNER_PORT}:${BACKEND_INNER_PORT}"
+    networks:
+      - part_network
+    environment:
+      SECRET_KEY : ${SECRET_KEY}
+      DEBUG : ${DEBUG}
+      BACKEND_INNER_PORT : ${BACKEND_INNER_PORT}
+      DB_CONTAINER_NAME : backend_db
+      DB_INNER_PORT : 5432
+      BACKEND_DB : ${BACKEND_DB}
+      BACKEND_USER : ${BACKEND_USER}
+      BACKEND_USER_PASSWORD : ${BACKEND_USER_PASSWORD}
+      ACCESS_TOKEN_LIFETIME : ${ACCESS_TOKEN_LIFETIME}
+      REFRESH_TOKEN_LIFETIME : ${REFRESH_TOKEN_LIFETIME}
+
+
+    command: /bin/sh -c "sleep 10 &&
+                                              python3 manage.py makemigrations &&
+                                              python3 manage.py makemigrations accounts &&
+                                              python3 manage.py migrate &&
+                                              yes yes | python3 manage.py collectstatic &&
+                                              python3 manage.py runserver 0.0.0.0:${BACKEND_INNER_PORT}"
+    depends_on:
+      - backend_db
+
+
+  # Database
+  backend_db:
+    image: postgres:14-alpine
+    container_name: backend_db
+    restart: always
+    expose:
+      - "5432"
+    healthcheck:
+      test: ["CMD", "pg_isready", "-q", "-d", "${BACKEND_DB:-postgres}", "-U", "${BACKEND_USER:-postgres}"]
+      timeout: 10s
+      interval: 10s
+      retries: 10
+
+    environment:
+      POSTGRES_DB: ${BACKEND_DB}
+      POSTGRES_USER: ${BACKEND_USER}
+      POSTGRES_PASSWORD: ${BACKEND_USER_PASSWORD}
+    
+    volumes:
+      - ./backend-data:/var/lib/postgresql/data # data persistence
+
+    networks:
+      - part_network
+
+
+
+
+
+volumes:
+  backend-data:
+    driver: local

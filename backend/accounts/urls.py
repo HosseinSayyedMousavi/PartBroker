@@ -1,7 +1,7 @@
 from django.urls import path , include
 from . import views
 from rest_framework_simplejwt.views import (TokenRefreshView,TokenVerifyView)
-
+from rest_framework_simplejwt.views import TokenObtainPairView
 app_name = "accounts"
 
 urlpatterns = [
@@ -9,7 +9,7 @@ urlpatterns = [
     # register 
     path("register/",views.RegistrationApiView.as_view(),name = 'register'),
     # login jwt
-    path("login/",views.CustomTokenObtainPairView.as_view() , name = "login"),
+    path("login/",TokenObtainPairView.as_view() , name = "login"),
     path("refresh/",TokenRefreshView.as_view() , name = "jwt-refresh"),
     path("verify/",TokenVerifyView.as_view() , name = "jwt-verify"),
     # user update

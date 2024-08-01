@@ -2,12 +2,9 @@ from rest_framework import generics
 from .serializers import RegistrationSerializer
 from rest_framework import status , permissions
 from rest_framework.response import Response
-from copy import copy
-from rest_framework_simplejwt.views import TokenObtainPairView
-from rest_framework_simplejwt.tokens import RefreshToken   
 from .serializers import RegistrationSerializer ,  UpdateUserAPIViewSerializer , UserAPIViewSerializer
 from .models import User
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+
 class RegistrationApiView(generics.GenericAPIView):
     serializer_class = RegistrationSerializer
 
@@ -18,10 +15,6 @@ class RegistrationApiView(generics.GenericAPIView):
             serializer.data.pop("password",None)
             return Response(serializer.data , status = status.HTTP_201_CREATED)
         return Response(serializer.errors , status = status.HTTP_400_BAD_REQUEST)
-
-
-class CustomTokenObtainPairView(TokenObtainPairView):
-    serializer_class = TokenObtainPairSerializer
 
 
 class UserAPIView(generics.GenericAPIView):
