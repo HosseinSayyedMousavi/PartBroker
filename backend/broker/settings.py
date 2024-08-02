@@ -38,8 +38,12 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "accounts.apps.AccountsConfig",
-    "wallet.apps.AccountsConfig",
+    "accounts",
+    "wallet",
+    "api",
+    "drf_yasg",
+    "rest_framework",
+    "rest_framework_simplejwt",    
 ]
 
 MIDDLEWARE = [
@@ -56,15 +60,15 @@ ROOT_URLCONF = "broker.urls"
 
 TEMPLATES = [
     {
-        "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
-        "APP_DIRS": True,
-        "OPTIONS": {
-            "context_processors": [
-                "django.template.context_processors.debug",
-                "django.template.context_processors.request",
-                "django.contrib.auth.context_processors.auth",
-                "django.contrib.messages.context_processors.messages",
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [],  
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
             ],
         },
     },
@@ -73,8 +77,8 @@ TEMPLATES = [
 WSGI_APPLICATION = "broker.wsgi.application"
 AUTH_USER_MODEL='accounts.User'
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME':timedelta(hours=1),
-    'REFRESH_TOKEN_LIFETIME':timedelta(hours=24),
+    'ACCESS_TOKEN_LIFETIME':timedelta(hours=config('ACCESS_TOKEN_LIFETIME',cast=int)),
+    'REFRESH_TOKEN_LIFETIME':timedelta(hours=config('REFRESH_TOKEN_LIFETIME',cast=int)),
 }
 
 REST_FRAMEWORK = {
@@ -144,3 +148,12 @@ MEDIA_ROOT = BASE_DIR / "media"
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+SWAGGER_SETTINGS = {
+    'SECURITY_DEFINITIONS': {
+        'Token': {
+            'type': 'apiKey',
+            'name': 'Authorization',
+            'in': 'header'
+        }
+    }
+}

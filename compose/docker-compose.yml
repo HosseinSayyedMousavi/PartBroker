@@ -1,10 +1,6 @@
 version: "3.8"
 
 networks:
-
-
-
-
   part_network:
 
 services:
@@ -39,6 +35,7 @@ services:
                                               python3 manage.py makemigrations accounts &&
                                               python3 manage.py makemigrations wallet &&
                                               python3 manage.py migrate &&
+                                              yes yes | python3 manage.py create_superuser &&
                                               yes yes | python3 manage.py collectstatic &&
                                               python3 manage.py runserver 0.0.0.0:${BACKEND_INNER_PORT}"
     depends_on:
@@ -64,15 +61,11 @@ services:
       POSTGRES_PASSWORD: ${BACKEND_USER_PASSWORD}
     
     volumes:
-      - ./backend-data:/var/lib/postgresql/data # data persistence
+      - backend_data:/var/lib/postgresql/data # data persistence
 
     networks:
       - part_network
 
-
-
-
-
 volumes:
-  backend-data:
+  backend_data:
     driver: local

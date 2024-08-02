@@ -13,7 +13,7 @@ class CustomUserAdmin(UserAdmin):
     """
 
     model = User
-    list_display = ("phone_number","email", "is_superuser", "is_active", "get_is_validate")
+    list_display = ("phone_number","email", "is_superuser", "is_active")
     list_filter = ("email", "is_superuser", "is_active", )
     searching_fields = ("email",)
     ordering = ("email",)

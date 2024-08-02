@@ -16,7 +16,7 @@ class CoinSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 class WalletSerializer(serializers.ModelSerializer):
-    coins = WalletCoinSerializer(source='wallet_coins', many=True, read_only=True)
+    coins = WalletCoinSerializer(source='wallet_coin', many=True, read_only=True)
     owner = serializers.StringRelatedField(read_only=True)
 
     class Meta:
@@ -30,10 +30,10 @@ class TransferSerializer(serializers.Serializer):
     amount = serializers.FloatField(min_value=0.00000000001)
     def validate(self, attrs):
         valid = super().validate(attrs)
-        source_wallet = get_object_or_404(Wallet,address=attrs['from_address'])        
-        recipient_wallet = get_object_or_404(Wallet,address=attrs['to_address'])
-        coin = get_object_or_404(Coin , symbol=attrs['symbol'])
-        wallet_coin = WalletCoin.objects.filter(wallet=source_wallet , coin=coin , balance__gte=attrs['amount'])
+        source_wallet = get_object_or_404(Wallet,address=valid['from_address'])        
+        recipient_wallet = get_object_or_404(Wallet,address=valid['to_address'])
+        coin = get_object_or_404(Coin , symbol=valid['symbol'])
+        wallet_coin = WalletCoin.objects.filter(wallet=source_wallet , coin=coin , balance__gte=valid['amount'])
         if not wallet_coin.exists() : raise serializers.ValidationError(_(f"Not enough {coin.symbol} in your wallet"))
         valid['recipient_wallet'] = recipient_wallet
         valid['coin'] = coin
@@ -45,7 +45,7 @@ class DepositSerializer(serializers.Serializer):
 
     def validate(self, attrs):
         valid = super().validate(attrs)
-        coin , _ =get_object_or_404(Coin , symbol=attrs['symbol'])
+        coin =get_object_or_404(Coin , symbol=valid['symbol'])
         valid['coin'] = coin
         return valid
 

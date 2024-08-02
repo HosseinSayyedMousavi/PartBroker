@@ -2,9 +2,10 @@ from rest_framework import generics
 from .serializers import RegistrationSerializer
 from rest_framework import status , permissions
 from rest_framework.response import Response
-from .serializers import RegistrationSerializer ,  UpdateUserAPIViewSerializer , UserAPIViewSerializer
+from .serializers import RegistrationSerializer ,  UpdateUserAPIViewSerializer , UserAPIViewSerializer 
 from .models import User
 from django.utils.translation import gettext_lazy as _
+
 class RegistrationApiView(generics.GenericAPIView):
     serializer_class = RegistrationSerializer
 
