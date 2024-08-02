@@ -6,8 +6,9 @@ from .serializers import WalletSerializer , CoinSerializer
 from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework import permissions
-from .serializers import TransferSerializer , DepositSerializer
+from .serializers import TransferSerializer , DepositSerializer , TransactionSerializer
 from django.contrib.auth import get_user_model
+from django.utils.translation import gettext_lazy as _
 User = get_user_model()
 class CustomPagination(PageNumberPagination):
     page_size = 100  
@@ -41,6 +42,9 @@ class TransferView(generics.GenericAPIView):
         wallet_coin , _ = WalletCoin.objects.get_or_create(wallet=recipient_wallet , coin=coin)
         wallet_coin.balance += amount 
         wallet_coin.save()
+        transaction = TransactionSerializer(source_wallet = source_wallet ,recipient_wallet=recipient_wallet,amount=amount,transaction_type='transfer')
+        transaction.is_valid(raise_exception=True)
+        transaction.save()
         return Response({"detail": "Transfer successful."}, status=status.HTTP_200_OK)
 
 class DepositView(generics.GenericAPIView):
@@ -56,5 +60,8 @@ class DepositView(generics.GenericAPIView):
         wallet_coin , _ = WalletCoin.objects.get_or_create(wallet=wallet , coin=coin)
         wallet_coin.balance += amount
         wallet_coin.save()
+        transaction = TransactionSerializer(recipient_wallet=wallet,amount=amount,transaction_type='deposit')
+        transaction.is_valid(raise_exception=True)
+        transaction.save()
         return Response({"detail": "Deposit successful."}, status=status.HTTP_200_OK)
 

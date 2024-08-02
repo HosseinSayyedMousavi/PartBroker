@@ -35,3 +35,13 @@ class WalletCoin(models.Model):
 
     def __str__(self):
         return f"{self.coin} balance in wallet of {self.wallet.owner}"
+
+
+class Transaction(models.Model):
+    source_wallet = models.ForeignKey(Wallet, on_delete=models.CASCADE, null=True , blank = True ,related_name='transaction_source_wallet')
+    recipient_wallet = models.ForeignKey(Wallet, on_delete=models.CASCADE,related_name='transaction_recipient_wallet')
+    amount = models.FloatField(default=0,validators=[MinValueValidator(0.0)])
+    transaction_type = models.CharField(choices = [('deposit','deposit'),('transfer','transfer')])
+    date = models.DateTimeField(auto_now_add=True)
+
+

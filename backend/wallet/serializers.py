@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Wallet, WalletCoin , Coin
+from .models import Wallet, WalletCoin , Coin , Transaction
 from django.shortcuts import get_object_or_404
 class WalletCoinSerializer(serializers.ModelSerializer):
     symbol = serializers.CharField(source='coin.symbol', read_only=True)
@@ -47,3 +47,8 @@ class DepositSerializer(serializers.Serializer):
         coin , _ =get_object_or_404(Coin , symbol=attrs['symbol'])
         valid['coin'] = coin
         return valid
+
+class TransactionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Transaction
+        fields = '__all__'
