@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import Wallet, WalletCoin , Coin , Transaction
 from django.shortcuts import get_object_or_404
+from django.utils.translation import gettext_lazy as _
 class WalletCoinSerializer(serializers.ModelSerializer):
     symbol = serializers.CharField(source='coin.symbol', read_only=True)
     price = serializers.FloatField(source='coin.price', read_only=True)
@@ -33,7 +34,7 @@ class TransferSerializer(serializers.Serializer):
         recipient_wallet = get_object_or_404(Wallet,address=attrs['to_address'])
         coin = get_object_or_404(Coin , symbol=attrs['symbol'])
         wallet_coin = WalletCoin.objects.filter(wallet=source_wallet , coin=coin , balance__gte=attrs['amount'])
-        if not wallet_coin.exists() : raise serializers.ValidationError(f"Not enough {coin.symbol} in your wallet")
+        if not wallet_coin.exists() : raise serializers.ValidationError(_(f"Not enough {coin.symbol} in your wallet"))
         valid['recipient_wallet'] = recipient_wallet
         valid['coin'] = coin
         return valid

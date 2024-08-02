@@ -37,6 +37,7 @@ services:
     command: /bin/sh -c "sleep 10 &&
                                               python3 manage.py makemigrations &&
                                               python3 manage.py makemigrations accounts &&
+                                              python3 manage.py makemigrations wallet &&
                                               python3 manage.py migrate &&
                                               yes yes | python3 manage.py collectstatic &&
                                               python3 manage.py runserver 0.0.0.0:${BACKEND_INNER_PORT}"

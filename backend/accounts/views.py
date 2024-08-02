@@ -4,7 +4,7 @@ from rest_framework import status , permissions
 from rest_framework.response import Response
 from .serializers import RegistrationSerializer ,  UpdateUserAPIViewSerializer , UserAPIViewSerializer
 from .models import User
-
+from django.utils.translation import gettext_lazy as _
 class RegistrationApiView(generics.GenericAPIView):
     serializer_class = RegistrationSerializer
 
@@ -29,4 +29,4 @@ class UserAPIView(generics.GenericAPIView):
         serializer = UpdateUserAPIViewSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         User.objects.filter(id=request.user.id).update(**serializer.validated_data)
-        return Response({"error":False , "detail":"user updated successfully!"})
+        return Response({"error":False , "detail":_("user updated successfully!")})

@@ -12,7 +12,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
 
     def validate(self,attrs):
         if attrs.get('password') != attrs.get('password1'):
-            raise serializers.ValidationError({"detail" : "passwords does\'nt match"})
+            raise serializers.ValidationError({"detail" : _("passwords does\'nt match")})
         try:
              validate_password(attrs.get('password'))
         except exceptions.ValidationError as e:
@@ -23,8 +23,6 @@ class RegistrationSerializer(serializers.ModelSerializer):
     def create(self,validated_data):
         validated_data.pop('password1',None)
         return User.objects.create_user(**validated_data)
-
-
 
 
 class UpdateUserAPIViewSerializer(serializers.Serializer):

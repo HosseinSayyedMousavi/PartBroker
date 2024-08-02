@@ -45,7 +45,7 @@ class TransferView(generics.GenericAPIView):
         transaction = TransactionSerializer(source_wallet = source_wallet ,recipient_wallet=recipient_wallet,amount=amount,transaction_type='transfer')
         transaction.is_valid(raise_exception=True)
         transaction.save()
-        return Response({"detail": "Transfer successful."}, status=status.HTTP_200_OK)
+        return Response({"detail": _("Transfer successful.")}, status=status.HTTP_200_OK)
 
 class DepositView(generics.GenericAPIView):
     serializer_class = DepositSerializer
@@ -63,5 +63,5 @@ class DepositView(generics.GenericAPIView):
         transaction = TransactionSerializer(recipient_wallet=wallet,amount=amount,transaction_type='deposit')
         transaction.is_valid(raise_exception=True)
         transaction.save()
-        return Response({"detail": "Deposit successful."}, status=status.HTTP_200_OK)
+        return Response({"detail": _("Deposit successful.")}, status=status.HTTP_200_OK)
 
