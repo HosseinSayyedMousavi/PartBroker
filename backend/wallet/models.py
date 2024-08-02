@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 import uuid
+from django.core.validators import MinValueValidator
 
 User = get_user_model()
 # Create your models here.
@@ -26,7 +27,7 @@ class Wallet(models.Model):
 class WalletCoin(models.Model):
     wallet = models.ForeignKey(Wallet, on_delete=models.CASCADE, related_name='wallet_coin')
     coin = models.ForeignKey(Coin, on_delete=models.CASCADE, related_name='wallet_coin')
-    balance = models.FloatField(default=0)
+    balance = models.FloatField(default=0,validators=[MinValueValidator(0.0)])
     updated_date = models.DateTimeField(auto_now=True)
     
     class Meta:
