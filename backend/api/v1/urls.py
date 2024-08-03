@@ -3,7 +3,7 @@ from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 from drf_yasg.generators import OpenAPISchemaGenerator
 from rest_framework import permissions
-app_name="api-v1"
+app_name="v1"
 
 
 class BothHttpAndHttpsSchemaGenerator(OpenAPISchemaGenerator):
