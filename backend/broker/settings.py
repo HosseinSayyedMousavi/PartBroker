@@ -99,7 +99,6 @@ REST_FRAMEWORK = {
             'user': '10/minute',  # For authenticated users
             'anon': '5/minute',  # For anonymous users
     },
-
 }
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases

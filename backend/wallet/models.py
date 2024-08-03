@@ -3,6 +3,8 @@ import uuid
 from django.core.validators import MinValueValidator
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext_lazy as _
+from decimal import Decimal
+
 User = get_user_model()
 # Create your models here.
 class Coin(models.Model):
@@ -25,7 +27,7 @@ class Wallet(models.Model):
 class WalletCoin(models.Model):
     wallet = models.ForeignKey(Wallet, on_delete=models.CASCADE, related_name='wallet_coin')
     coin = models.ForeignKey(Coin, on_delete=models.CASCADE, related_name='wallet_coin')
-    balance = models.FloatField(default=0,validators=[MinValueValidator(0)])
+    balance = models.DecimalField(max_digits=20,decimal_places=12,default=Decimal('0'), validators=[MinValueValidator(Decimal('0'))])
     updated_date = models.DateTimeField(auto_now=True)
     
     class Meta:
@@ -38,7 +40,8 @@ class WalletCoin(models.Model):
 class Transaction(models.Model):
     source_wallet = models.ForeignKey(Wallet, on_delete=models.CASCADE, null=True , blank = True ,related_name='transaction_source_wallet')
     recipient_wallet = models.ForeignKey(Wallet, on_delete=models.CASCADE,related_name='transaction_recipient_wallet')
-    amount = models.FloatField(default=0,validators=[MinValueValidator(0.0)])
+    coin = models.ForeignKey(Coin, on_delete=models.CASCADE)
+    amount = models.DecimalField(max_digits=20,decimal_places=12, validators=[MinValueValidator(Decimal('0.00000000001'))])
     transaction_type = models.CharField(choices = [('deposit','deposit'),('transfer','transfer')])
     date = models.DateTimeField(auto_now_add=True)
 

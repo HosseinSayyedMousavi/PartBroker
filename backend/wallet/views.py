@@ -11,6 +11,8 @@ from django.contrib.auth import get_user_model
 from django.utils.translation import gettext_lazy as _
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
+from decimal import Decimal
+
 User = get_user_model()
 class CustomPagination(PageNumberPagination):
     page_size = 100  
@@ -87,13 +89,13 @@ class TransferView(generics.GenericAPIView):
         coin = serializer.validated_data['coin']
         amount = serializer.validated_data['amount']
         recipient_wallet_coin , c = WalletCoin.objects.get_or_create(wallet=recipient_wallet , coin=coin)
-        recipient_wallet_coin.balance += amount 
+        recipient_wallet_coin.balance += amount
         recipient_wallet_coin.save()
 
         source_wallet_coin , c = WalletCoin.objects.get_or_create(wallet=source_wallet , coin=coin)
-        source_wallet_coin.balance -= amount 
+        source_wallet_coin.balance -= amount
         source_wallet_coin.save()
-        data = {'source_wallet' : source_wallet.id ,'recipient_wallet':recipient_wallet.id,'amount':amount,'transaction_type':'transfer'}
+        data = {'source_wallet' : source_wallet.id ,'recipient_wallet':recipient_wallet.id,'amount':amount,'transaction_type':'transfer','coin':coin.id}
         transaction = TransactionSerializer(data=data)
         transaction.is_valid(raise_exception=True)
         transaction.save()
@@ -112,7 +114,7 @@ class DepositView(generics.GenericAPIView):
         wallet_coin , c = WalletCoin.objects.get_or_create(wallet=wallet , coin=coin)
         wallet_coin.balance += amount
         wallet_coin.save()
-        data={'recipient_wallet':wallet.id,'amount':amount,'transaction_type':'deposit'}
+        data={'recipient_wallet':wallet.id,'amount':amount,'transaction_type':'deposit','coin':coin.id}
         transaction = TransactionSerializer(data=data)
         transaction.is_valid(raise_exception=True)
         transaction.save()

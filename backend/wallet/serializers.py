@@ -2,6 +2,8 @@ from rest_framework import serializers
 from .models import Wallet, WalletCoin , Coin , Transaction
 from django.shortcuts import get_object_or_404
 from django.utils.translation import gettext_lazy as _
+from decimal import Decimal
+
 class WalletCoinSerializer(serializers.ModelSerializer):
     symbol = serializers.CharField(source='coin.symbol', read_only=True)
     price = serializers.FloatField(source='coin.price', read_only=True)
@@ -25,16 +27,17 @@ class WalletSerializer(serializers.ModelSerializer):
     
     def get_total_value(self,obj):
         total = 0
-        wallet_coins = obj.wallet_coin.all() .order_by('id')
+        wallet_coins = obj.wallet_coin.all().order_by('id')
         for wallet_coin in wallet_coins:
-            total += wallet_coin.coin.price * wallet_coin.balance
+            total += wallet_coin.coin.price * float(wallet_coin.balance)
         return total
 
 class TransferSerializer(serializers.Serializer):
     from_address = serializers.UUIDField()
     to_address = serializers.UUIDField()
     symbol = serializers.CharField()
-    amount = serializers.FloatField(min_value=0.00000000001)
+    amount = serializers.DecimalField(min_value=Decimal('0.00000000001'), max_digits=20, decimal_places=12)
+
     def validate(self, attrs):                                     
         valid = super().validate(attrs)
         source_wallet = get_object_or_404(Wallet,address=valid['from_address'])        
@@ -48,7 +51,7 @@ class TransferSerializer(serializers.Serializer):
 
 class DepositSerializer(serializers.Serializer):
     symbol = serializers.CharField()
-    amount = serializers.FloatField(min_value=0.00000000001)
+    amount = serializers.DecimalField(min_value=Decimal('0.00000000001'), max_digits=20, decimal_places=12)
 
     def validate(self, attrs):
         valid = super().validate(attrs)

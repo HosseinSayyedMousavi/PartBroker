@@ -30,10 +30,10 @@ class WalletAdmin(admin.ModelAdmin):
 
 @admin.register(Transaction)
 class TransactionAdmin(admin.ModelAdmin):
-    list_display = ('source_wallet', 'recipient_wallet', 'amount', 'transaction_type', 'date')
+    list_display = ('source_wallet', 'recipient_wallet', 'amount', 'coin','transaction_type', 'date')
     search_fields = ('source_wallet__owner__username', 'recipient_wallet__owner__username')
     list_filter = ('transaction_type', 'date')
-    readonly_fields = ('date','amount','source_wallet', 'recipient_wallet','transaction_type')
+    readonly_fields = ('date','coin','amount','source_wallet', 'recipient_wallet','transaction_type')
 
     def has_add_permission(self, request):
         # Disables the add functionality in the admin interface
