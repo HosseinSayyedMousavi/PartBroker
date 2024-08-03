@@ -29,7 +29,6 @@ services:
       ACCESS_TOKEN_LIFETIME : ${ACCESS_TOKEN_LIFETIME}
       REFRESH_TOKEN_LIFETIME : ${REFRESH_TOKEN_LIFETIME}
       REDIS_CONTAINER_NAME : ${REDIS_CONTAINER_NAME}
-      REDIS_PASSWORD : ${REDIS_PASSWORD}
 
     command: /bin/sh -c "sleep 10 &&
                                               python3 manage.py makemigrations &&
@@ -103,7 +102,6 @@ services:
       ACCESS_TOKEN_LIFETIME : ${ACCESS_TOKEN_LIFETIME}
       REFRESH_TOKEN_LIFETIME : ${REFRESH_TOKEN_LIFETIME}
       REDIS_CONTAINER_NAME : ${REDIS_CONTAINER_NAME}
-      REDIS_PASSWORD : ${REDIS_PASSWORD}
     networks:
       - part_network
     depends_on:
@@ -130,7 +128,6 @@ services:
       ACCESS_TOKEN_LIFETIME : ${ACCESS_TOKEN_LIFETIME}
       REFRESH_TOKEN_LIFETIME : ${REFRESH_TOKEN_LIFETIME}
       REDIS_CONTAINER_NAME : ${REDIS_CONTAINER_NAME}
-      REDIS_PASSWORD : ${REDIS_PASSWORD}
     networks:
       - part_network
     depends_on:

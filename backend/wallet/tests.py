@@ -49,18 +49,16 @@ class WalletAPITests(APITestCase):
     def test_transfer_coin(self):
         self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.access_token1}')
         data = {
-            "from_address": str(self.wallet1.address),
             "to_address": str(self.wallet2.address),
             "symbol": "BTC",
-            "amount": 0.5
+            "amount": 0.3
         }
         response = self.client.post(self.transfer_url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.wallet_coin1.refresh_from_db()
-        self.assertEqual(self.wallet_coin1.balance, 0.5)
-
+        self.assertEqual(self.wallet_coin1.balance, 0.7)
         wallet_coin2 = WalletCoin.objects.get(wallet=self.wallet2, coin=self.coin)
-        self.assertEqual(wallet_coin2.balance, 0.5)
+        self.assertEqual(wallet_coin2.balance, 0.3)
 
     def test_deposit_coin(self):
         self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.access_token2}')
@@ -70,14 +68,12 @@ class WalletAPITests(APITestCase):
         }
         response = self.client.post(self.deposit_url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-
         wallet_coin2 = WalletCoin.objects.get(wallet=self.wallet2, coin=self.coin)
         self.assertEqual(wallet_coin2.balance, 0.25)
 
     def test_insufficient_balance_transfer(self):
         self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.access_token1}')
         data = {
-            "from_address": str(self.wallet1.address),
             "to_address": str(self.wallet2.address),
             "symbol": "BTC",
             "amount": 2  
@@ -87,16 +83,3 @@ class WalletAPITests(APITestCase):
         self.assertIn('non_field_errors', response.data)
         self.assertIn('Not enough BTC in your wallet',response.data['non_field_errors'])
 
-    def test_compare_balance_transfer(self):
-        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.access_token1}')
-        data = {
-            "from_address": str(self.wallet1.address),
-            "to_address": str(self.wallet2.address),
-            "symbol": "BTC",
-            "amount": 0.3  
-        }
-        self.client.post(self.transfer_url, data, format='json')
-        self.wallet_coin2 = WalletCoin.objects.get(id = self.wallet_coin2.id)
-        self.wallet_coin1 = WalletCoin.objects.get(id = self.wallet_coin1.id)
-        self.assertEqual(self.wallet_coin2.balance, 0.3)
-        self.assertEqual(self.wallet_coin1.balance, 0.7)

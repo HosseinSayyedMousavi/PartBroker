@@ -90,7 +90,16 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ]
+    ],
+        'DEFAULT_THROTTLE_CLASSES': [
+        'rest_framework.throttling.UserRateThrottle',
+        'rest_framework.throttling.AnonRateThrottle',
+    ],
+        'DEFAULT_THROTTLE_RATES': {
+            'user': '10/minute',  # For authenticated users
+            'anon': '5/minute',  # For anonymous users
+    },
+
 }
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases

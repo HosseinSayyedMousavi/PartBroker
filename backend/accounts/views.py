@@ -11,11 +11,10 @@ class RegistrationApiView(generics.GenericAPIView):
 
     def post(self, request, *args, **kwargs):
         serializer = self.serializer_class(data = request.data)
-        if serializer.is_valid():
-            serializer.save()
-            serializer.data.pop("password",None)
-            return Response(serializer.data , status = status.HTTP_201_CREATED)
-        return Response(serializer.errors , status = status.HTTP_400_BAD_REQUEST)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        serializer.data.pop("password",None)
+        return Response(serializer.data , status = status.HTTP_201_CREATED)
 
 
 class UserAPIView(generics.GenericAPIView):

@@ -18,17 +18,24 @@ class CoinSerializer(serializers.ModelSerializer):
 class WalletSerializer(serializers.ModelSerializer):
     coins = WalletCoinSerializer(source='wallet_coin', many=True, read_only=True)
     owner = serializers.StringRelatedField(read_only=True)
-
+    total_value = serializers.SerializerMethodField()
     class Meta:
         model = Wallet
-        fields = ['owner', 'address', 'created_date', 'updated_date', 'coins']
+        fields = ['owner', 'address', 'created_date', 'updated_date', 'coins','total_value']
+    
+    def get_total_value(self,obj):
+        total = 0
+        wallet_coins = obj.wallet_coin.all() .order_by('id')
+        for wallet_coin in wallet_coins:
+            total += wallet_coin.coin.price * wallet_coin.balance
+        return total
 
 class TransferSerializer(serializers.Serializer):
     from_address = serializers.UUIDField()
     to_address = serializers.UUIDField()
     symbol = serializers.CharField()
     amount = serializers.FloatField(min_value=0.00000000001)
-    def validate(self, attrs):
+    def validate(self, attrs):                                     
         valid = super().validate(attrs)
         source_wallet = get_object_or_404(Wallet,address=valid['from_address'])        
         recipient_wallet = get_object_or_404(Wallet,address=valid['to_address'])
