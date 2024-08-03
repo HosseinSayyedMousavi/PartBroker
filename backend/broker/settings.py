@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from pathlib import Path
 from decouple import config
 from datetime import timedelta
+from urllib.parse import quote
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -45,6 +46,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "rest_framework_simplejwt",    
     "corsheaders",
+    "django_celery_beat"
 ]
 
 MIDDLEWARE = [
@@ -163,3 +165,7 @@ SWAGGER_SETTINGS = {
 # corsheaders
 
 CORS_ALLOW_ALL_ORIGINS = True
+
+# background task and cache
+
+CELERY_BROKER_URL=f"redis://{config('REDIS_CONTAINER_NAME')}:6379/0"

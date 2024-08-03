@@ -19,7 +19,7 @@ class Wallet(models.Model):
     updated_date = models.DateTimeField(auto_now=True)
     
     def __str__(self):
-        return _(f"Wallet of {self.owner}")
+        return str(_(f"Wallet of {self.owner}"))
 
 
 class WalletCoin(models.Model):
@@ -32,7 +32,7 @@ class WalletCoin(models.Model):
         unique_together = ["wallet", "coin"]
 
     def __str__(self):
-        return _(f"{self.coin} balance in wallet of {self.wallet.owner}")
+        return str(_(f"{self.coin} balance in wallet of {self.wallet.owner}"))
 
 
 class Transaction(models.Model):

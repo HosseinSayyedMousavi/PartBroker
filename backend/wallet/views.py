@@ -86,9 +86,13 @@ class TransferView(generics.GenericAPIView):
         recipient_wallet = serializer.validated_data['recipient_wallet']
         coin = serializer.validated_data['coin']
         amount = serializer.validated_data['amount']
-        wallet_coin , c = WalletCoin.objects.get_or_create(wallet=recipient_wallet , coin=coin)
-        wallet_coin.balance += amount 
-        wallet_coin.save()
+        recipient_wallet_coin , c = WalletCoin.objects.get_or_create(wallet=recipient_wallet , coin=coin)
+        recipient_wallet_coin.balance += amount 
+        recipient_wallet_coin.save()
+
+        source_wallet_coin , c = WalletCoin.objects.get_or_create(wallet=source_wallet , coin=coin)
+        source_wallet_coin.balance -= amount 
+        source_wallet_coin.save()
         data = {'source_wallet' : source_wallet.id ,'recipient_wallet':recipient_wallet.id,'amount':amount,'transaction_type':'transfer'}
         transaction = TransactionSerializer(data=data)
         transaction.is_valid(raise_exception=True)
